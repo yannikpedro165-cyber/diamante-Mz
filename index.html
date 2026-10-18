@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101126">
+<title>Diamante MZ | Recargas Free Fire</title>
+<style>
+:root{--bg:#0c0d1b;--panel:#17192d;--panel2:#20233d;--text:#f6f7ff;--muted:#a8accb;--purple:#8b5cf6;--cyan:#46d9ff;--line:#303452;--gold:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top right,#24204b 0,#0c0d1b 42%);color:var(--text);font:16px system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:18px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:#0c0d1bf2;backdrop-filter:blur(10px);z-index:5}
+.brand{display:flex;gap:10px;align-items:center;font-weight:900;font-size:19px}.logo{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#090a18;font-size:22px}
+nav{display:flex;gap:8px}button,.tab{border:0;border-radius:12px;padding:11px 14px;font-weight:750;cursor:pointer}button.primary{background:linear-gradient(110deg,var(--purple),#5d8dff);color:white}button.secondary,.tab{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button:disabled{opacity:.45;cursor:not-allowed}
+main{max-width:980px;margin:auto;padding:22px 15px 48px}.hero{padding:26px 20px;border:1px solid #45406e;border-radius:24px;background:linear-gradient(130deg,#211b46,#151a32 65%,#102d42);overflow:hidden}
+.eyebrow{color:var(--cyan);font-size:12px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase}.hero h1{font-size:clamp(30px,7vw,48px);line-height:1.04;margin:10px 0}.hero p{color:#d4d7ef;max-width:620px;line-height:1.55}.notice{font-size:13px;color:var(--gold);background:#3a2d1b;border:1px solid #71552c;border-radius:12px;padding:12px;margin-top:16px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:28px 0 13px}.section-head h2{margin:0;font-size:22px}.muted{color:var(--muted);font-size:13px}
+.packages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.pack{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:16px;text-align:left;color:var(--text);min-height:120px}.pack.selected{border:2px solid var(--cyan);background:#19243b}.diamond{font-size:23px}.pack strong{display:block;font-size:18px;margin:8px 0 3px}.price{color:var(--cyan);font-weight:900}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:18px}.field{margin:13px 0}.field label{display:block;font-weight:700;font-size:14px;margin-bottom:7px}.field input,.field select{width:100%;padding:14px;border-radius:12px;border:1px solid #3b3f60;background:#0e1021;color:white;font:inherit}.wide{width:100%;padding:14px;margin-top:7px}.status{border-radius:12px;padding:12px;background:#25233e;color:#d9d9ff;font-size:14px;margin-top:12px;line-height:1.5}.hidden{display:none!important}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.tab.active{background:var(--purple);border-color:var(--purple)}.order{border:1px solid var(--line);border-radius:13px;padding:13px;margin:10px 0;background:#111326}.order-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.pill{font-size:11px;border-radius:999px;padding:5px 9px;background:#34304d;color:#ddd}.order-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.order-actions button{font-size:12px;padding:8px 10px}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{background:#111326;border:1px solid var(--line);border-radius:13px;padding:14px}.metric b{font-size:24px;display:block}.small{font-size:12px;color:var(--muted);line-height:1.5}footer{text-align:center;padding:24px;color:var(--muted);font-size:12px}
+@media(min-width:650px){.packages{grid-template-columns:repeat(4,minmax(0,1fr))}.hero{padding:36px}.admin-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">◆</div><span>DIAMANTE <span style="color:var(--cyan)">MZ</span></span></div><nav><button class="secondary" id="shopNav">Loja</button><button class="secondary" id="adminNav">Admin</button></nav></header>
+<main>
+<section id="shopView">
+<div class="hero"><div class="eyebrow">Recargas para jogadores</div><h1>Diamantes para a tua próxima partida.</h1><p>Escolhe um pacote, indica o teu ID de jogador e regista a encomenda. Estamos a preparar a integração de recargas reais.</p><div class="notice">MODO DEMONSTRAÇÃO: os preços e pacotes são exemplos. Nenhum pagamento é cobrado e nenhum diamante é enviado nesta versão.</div></div>
+<div class="section-head"><h2>Escolhe o pacote</h2><span class="muted">Preços ilustrativos</span></div>
+<div class="packages" id="packages"></div>
+<div class="panel"><h2 style="margin-top:0">Dados da encomenda</h2>
+<div class="field"><label for="playerId">ID do jogador Free Fire</label><input id="playerId" inputmode="numeric" placeholder="Ex.: 1234567890" maxlength="24"></div>
+<div class="field"><label for="contact">Contacto para acompanhamento (opcional)</label><input id="contact" placeholder="Número de telefone"></div>
+<div class="field"><label>Método de pagamento</label><input value="e-Mola (integração ainda não ligada)" disabled></div>
+<button class="primary wide" id="orderBtn">Criar encomenda de demonstração</button>
+<div id="shopMessage" class="status hidden" role="status"></div>
+</div>
+<div class="panel"><h3 style="margin-top:0">Consultar encomenda</h3><div class="field"><label for="lookupId">Número da encomenda</label><input id="lookupId" placeholder="Ex.: DMZ-123456"></div><button class="secondary wide" id="lookupBtn">Consultar estado</button><div id="lookupMessage" class="status hidden"></div></div>
+</section>
+<section id="adminView" class="hidden">
+<div class="hero"><div class="eyebrow">Área de gestão • protótipo local</div><h1>Painel administrativo</h1><p>Visualiza encomendas de demonstração e atualiza o estado para testar o fluxo.</p><div class="notice">Este painel não tem autenticação nem servidor. Não o publiques com dados reais antes de adicionar login seguro e base de dados.</div></div>
+<div class="panel"><h2 style="margin-top:0">Acesso de demonstração</h2><div class="field"><label for="adminPin">Código de demonstração</label><input id="adminPin" type="password" placeholder="Código: 2468"></div><button class="primary wide" id="adminLogin">Abrir painel</button><div id="adminMessage" class="status hidden"></div></div>
+<div id="adminContent" class="hidden"><div class="admin-grid" id="metrics"></div><div class="section-head"><h2>Encomendas</h2><button class="secondary" id="exportBtn">Exportar CSV</button></div><div id="ordersList"></div><button class="secondary wide" id="clearBtn">Apagar encomendas de demonstração</button><p class="small">Os dados ficam apenas neste navegador, usando armazenamento local. Limpar dados do navegador pode apagá-los.</p></div>
+</section>
+</main>
+<footer>Diamante MZ • Protótipo demonstrativo • Não afiliado oficialmente à Garena ou ao Free Fire.</footer>
+<script>
+const packages = [
+ {id:"p1",diamonds:100,price:50},{id:"p2",diamonds:310,price:150},
+ {id:"p3",diamonds:520,price:250},{id:"p4",diamonds:1060,price:500}
+];
+let selected = "p2";
+const $ = id => document.getElementById(id);
+const getOrders = () => {try{return JSON.parse(localStorage.getItem("dmz_orders")||"[]")}catch(e){return []}};
+const saveOrders = orders => localStorage.setItem("dmz_orders",JSON.stringify(orders));
+const money = n => `${n} MT`;
+function renderPackages(){
+ $("packages").innerHTML=packages.map(p=>`<button class="pack ${p.id===selected?"selected":""}" data-id="${p.id}"><span class="diamond">💎</span><strong>${p.diamonds} diamantes</strong><span class="price">${money(p.price)}</span><div class="muted">Pacote de demonstração</div></button>`).join("");
+ document.querySelectorAll(".pack").forEach(b=>b.onclick=()=>{selected=b.dataset.id;renderPackages()});
+}
+function show(id,msg){$(id).textContent=msg;$(id).classList.remove("hidden")}
+function createOrder(){
+ const player=$("playerId").value.trim(), contact=$("contact").value.trim(), pack=packages.find(p=>p.id===selected);
+ if(!/^[0-9]{5,24}$/.test(player)){show("shopMessage","Introduz um ID numérico de jogador com pelo menos 5 dígitos.");return}
+ const order={id:"DMZ-"+Math.floor(100000+Math.random()*900000),player,contact,diamonds:pack.diamonds,price:pack.price,payment:"e-Mola (não ligado)",status:"Aguardando pagamento — demonstração",created:new Date().toLocaleString("pt-MZ")};
+ const orders=getOrders();orders.unshift(order);saveOrders(orders);
+ show("shopMessage",`Encomenda ${order.id} criada em modo de demonstração. Total ilustrativo: ${money(pack.price)}. Não pagues nem envies dinheiro por esta página: o e-Mola ainda não está ligado.`);
+ $("lookupId").value=order.id;
+}
+function lookup(){const id=$("lookupId").value.trim().toUpperCase(),o=getOrders().find(x=>x.id===id);show("lookupMessage",o?`Encomenda ${o.id} • ${o.diamonds} diamantes • ${money(o.price)} • Estado: ${o.status}.`: "Não foi encontrada uma encomenda com esse número neste navegador.");}
+function adminRender(){
+ const orders=getOrders();
+ $("metrics").innerHTML=`<div class="metric"><span class="muted">Encomendas</span><b>${orders.length}</b></div><div class="metric"><span class="muted">A aguardar</span><b>${orders.filter(o=>o.status.startsWith("Aguardando")).length}</b></div><div class="metric"><span class="muted">Concluídas (teste)</span><b>${orders.filter(o=>o.status==="Concluída (teste)").length}</b></div>`;
+ $("ordersList").innerHTML=orders.length?orders.map(o=>`<div class="order"><div class="order-top"><strong>${o.id}</strong><span class="pill">${o.status}</span></div><p style="margin:9px 0 4px">${o.diamonds} diamantes • ${money(o.price)}</p><div class="small">ID jogador: ${o.player} • ${o.created}<br>Contacto: ${o.contact||"Não indicado"}</div><div class="order-actions"><button class="secondary" data-order="${o.id}" data-status="Pagamento confirmado (teste)">Marcar pago (teste)</button><button class="secondary" data-order="${o.id}" data-status="Concluída (teste)">Marcar concluída (teste)</button><button class="secondary" data-order="${o.id}" data-status="Cancelada (teste)">Cancelar</button></div></div>`).join(""):'<div class="status">Ainda não existem encomendas.</div>';
+ document.querySelectorAll("[data-order]").forEach(b=>b.onclick=()=>{const os=getOrders(),o=os.find(x=>x.id===b.dataset.order);if(o){o.status=b.dataset.status;saveOrders(os);adminRender()}});
+}
+$("shopNav").onclick=()=>{$("shopView").classList.remove("hidden");$("adminView").classList.add("hidden")};
+$("adminNav").onclick=()=>{$("adminView").classList.remove("hidden");$("shopView").classList.add("hidden")};
+$("orderBtn").onclick=createOrder;$("lookupBtn").onclick=lookup;
+$("adminLogin").onclick=()=>{if($("adminPin").value==="2468"){$("adminContent").classList.remove("hidden");$("adminMessage").classList.add("hidden");adminRender()}else show("adminMessage","Código incorreto. Para esta demonstração, usa 2468.")};
+$("exportBtn").onclick=()=>{const os=getOrders();if(!os.length){alert("Não há encomendas para exportar.");return}const keys=["id","player","contact","diamonds","price","payment","status","created"];const csv=[keys.join(","),...os.map(o=>keys.map(k=>'"'+String(o[k]??"").replaceAll('"','""')+'"').join(","))].join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="diamante-mz-encomendas-demo.csv";a.click();URL.revokeObjectURL(a.href)};
+$("clearBtn").onclick=()=>{if(confirm("Apagar todas as encomendas de demonstração deste navegador?")){saveOrders([]);adminRender()}};
+renderPackages();
+</script>
+</body></html>
