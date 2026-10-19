@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10131b">
+<title>Sensibilidade Pro FF</title>
+<style>
+:root{color-scheme:dark;--bg:#10131b;--panel:#1b2030;--accent:#ff3d55;--text:#f4f6fb;--muted:#aeb6c8}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(160deg,#10131b,#171b29);color:var(--text);font:16px system-ui,Arial,sans-serif}
+main{max-width:720px;margin:auto;padding:22px 16px 40px}
+header{text-align:center;padding:18px 8px 24px}
+.logo{display:inline-grid;place-items:center;width:58px;height:58px;border-radius:18px;background:var(--accent);font-size:27px;font-weight:900}
+h1{margin:12px 0 5px;font-size:27px}
+.subtitle{color:var(--muted);margin:0}
+.card{background:var(--panel);border:1px solid #30374a;border-radius:18px;padding:18px;margin:14px 0}
+h2{font-size:18px;margin:0 0 14px}
+label{display:block;font-size:14px;color:var(--muted);margin:13px 0 7px}
+select,input{width:100%;padding:12px;border:1px solid #3b4358;border-radius:10px;background:#111521;color:var(--text);font:inherit}
+button{width:100%;padding:14px;border:0;border-radius:12px;background:var(--accent);color:white;font-weight:800;font-size:16px;margin-top:16px}
+button.secondary{background:#30374a;margin-top:9px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.result{background:#111521;border-radius:12px;padding:13px}
+.result span{display:block;color:var(--muted);font-size:13px}
+.result strong{font-size:26px}
+.note{color:var(--muted);font-size:13px;line-height:1.5}
+.status{color:#b7f7c5;font-size:14px;min-height:20px;margin-top:10px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:12px}
+@media(min-width:560px){.results{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="logo">SP</div>
+  <h1>Sensibilidade Pro FF</h1>
+  <p class="subtitle">Recomendações personalizadas para treinar a precisão</p>
+</header>
+
+<section class="card">
+<h2>O teu perfil</h2>
+<div class="grid">
+  <div><label for="device">Telemóvel</label><input id="device" value="Infinix HOT 40i" readonly></div>
+  <div><label for="dpi">DPI</label><input id="dpi" type="number" min="100" max="1000" value="480"></div>
+  <div><label for="buttonSize">Botão de tiro (%)</label><input id="buttonSize" type="number" min="1" max="100" value="50"></div>
+  <div><label for="hud">HUD</label><select id="hud"><option selected>2 dedos</option><option>3 dedos</option><option>4 dedos</option></select></div>
+</div>
+<label for="style">Estilo de jogo</label>
+<select id="style"><option selected value="precision">Precisão</option><option value="balanced">Equilibrado</option><option value="fast">Rápido</option></select>
+<button id="generate">Gerar recomendações</button>
+<div id="status" class="status" aria-live="polite"></div>
+</section>
+
+<section class="card" aria-live="polite">
+<h2>Valores sugeridos (0–200)</h2>
+<div class="results">
+  <div class="result"><span>Geral</span><strong id="general">145</strong></div>
+  <div class="result"><span>Ponto vermelho</span><strong id="red">135</strong></div>
+  <div class="result"><span>Mira 2x</span><strong id="scope2">125</strong></div>
+  <div class="result"><span>Mira 4x</span><strong id="scope4">110</strong></div>
+  <div class="result"><span>Mira AWM</span><strong id="awm">55</strong></div>
+  <div class="result"><span>Olhadinha</span><strong id="look">100</strong></div>
+</div>
+<button id="copy" class="secondary">Copiar configurações</button>
+<button id="save" class="secondary">Guardar neste dispositivo</button>
+<p class="note">Estes valores são pontos de partida para testes, não uma leitura automática do jogo. Testa no campo de treino e ajusta gradualmente conforme o comportamento da mira.</p>
+<div id="saveStatus" class="status" aria-live="polite"></div>
+</section>
+<footer>Ferramenta independente de treino. Não modifica os ficheiros nem as definições internas do Free Fire.</footer>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+function clamp(n){return Math.max(0,Math.min(200,Math.round(n)))}
+function generate(){
+  const dpi = Number($('dpi').value);
+  const button = Number($('buttonSize').value);
+  if(!Number.isFinite(dpi)||dpi<100||dpi>1000||!Number.isFinite(button)||button<1||button>100){
+    $('status').textContent='Confirma o DPI (100–1000) e o botão de tiro (1–100%).';return;
+  }
+  const style=$('style').value;
+  const base={precision: [145,135,125,110,55,100],balanced:[160,150,135,120,60,110],fast:[175,165,150,135,65,125]}[style];
+  // Pequenos ajustes heurísticos; valida sempre no campo de treino.
+  const dpiAdj=(dpi-480)/40;
+  const btnAdj=(button-50)*0.25;
+  const vals=[
+    clamp(base[0]+dpiAdj-btnAdj),
+    clamp(base[1]+dpiAdj-btnAdj),
+    clamp(base[2]+dpiAdj*0.6),
+    clamp(base[3]+dpiAdj*0.4),
+    clamp(base[4]),
+    clamp(base[5]+btnAdj*0.3)
+  ];
+  ['general','red','scope2','scope4','awm','look'].forEach((id,i)=>$(id).textContent=vals[i]);
+  $('status').textContent='Recomendações geradas. Testa e afina aos poucos.';
+  $('saveStatus').textContent='';
+}
+function configText(){
+ return `Sensibilidade Pro FF
+Telemóvel: ${$('device').value}
+DPI: ${$('dpi').value}
+Botão de tiro: ${$('buttonSize').value}%
+HUD: ${$('hud').value}
+Estilo: ${$('style').selectedOptions[0].text}
+Geral: ${$('general').textContent}
+Ponto vermelho: ${$('red').textContent}
+Mira 2x: ${$('scope2').textContent}
+Mira 4x: ${$('scope4').textContent}
+Mira AWM: ${$('awm').textContent}
+Olhadinha: ${$('look').textContent}`;
+}
+$('generate').addEventListener('click',generate);
+$('copy').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText(configText());$('saveStatus').textContent='Configurações copiadas.'}
+ catch(e){const t=document.createElement('textarea');t.value=configText();document.body.appendChild(t);t.select();const ok=document.execCommand('copy');t.remove();$('saveStatus').textContent=ok?'Configurações copiadas.':'Não foi possível copiar; seleciona e copia os valores manualmente.'}
+});
+$('save').addEventListener('click',()=>{
+ try{localStorage.setItem('sensibilidadeProFF',configText());$('saveStatus').textContent='Configurações guardadas neste navegador.'}
+ catch(e){$('saveStatus').textContent='O navegador não permitiu guardar os dados.'}
+});
+try{
+ const old=localStorage.getItem('sensibilidadeProFF');
+ if(old)$('saveStatus').textContent='Já existe uma configuração guardada neste navegador.';
+}catch(e){}
+generate();
+</script>
+</body>
+</html>
