@@ -29,7 +29,7 @@ main{max-width:980px;margin:auto;padding:22px 15px 48px}.hero{padding:26px 20px;
 <div class="panel"><h2 style="margin-top:0">Dados da encomenda</h2>
 <div class="field"><label for="playerId">ID do jogador Free Fire</label><input id="playerId" inputmode="numeric" placeholder="Ex.: 1234567890" maxlength="24"></div>
 <div class="field"><label for="contact">Contacto para acompanhamento (opcional)</label><input id="contact" placeholder="Número de telefone"></div>
-<div class="field"><label>Método de pagamento</label><input value="e-Mola (integração ainda não ligada)" disabled></div>
+<div class="field"><label>Método de pagamento</label><div class="status" id="paymentInfo">e-Mola • Número de pagamento ainda não configurado.</div></div>
 <button class="primary wide" id="orderBtn">Criar encomenda de demonstração</button>
 <div id="shopMessage" class="status hidden" role="status"></div>
 </div>
@@ -38,7 +38,15 @@ main{max-width:980px;margin:auto;padding:22px 15px 48px}.hero{padding:26px 20px;
 <section id="adminView" class="hidden">
 <div class="hero"><div class="eyebrow">Área de gestão • protótipo local</div><h1>Painel administrativo</h1><p>Visualiza encomendas de demonstração e atualiza o estado para testar o fluxo.</p><div class="notice">Este painel não tem autenticação nem servidor. Não o publiques com dados reais antes de adicionar login seguro e base de dados.</div></div>
 <div class="panel"><h2 style="margin-top:0">Acesso de demonstração</h2><div class="field"><label for="adminPin">Código de demonstração</label><input id="adminPin" type="password" placeholder="Código: 2468"></div><button class="primary wide" id="adminLogin">Abrir painel</button><div id="adminMessage" class="status hidden"></div></div>
-<div id="adminContent" class="hidden"><div class="admin-grid" id="metrics"></div><div class="section-head"><h2>Encomendas</h2><button class="secondary" id="exportBtn">Exportar CSV</button></div><div id="ordersList"></div><button class="secondary wide" id="clearBtn">Apagar encomendas de demonstração</button><p class="small">Os dados ficam apenas neste navegador, usando armazenamento local. Limpar dados do navegador pode apagá-los.</p></div>
+<div id="adminContent" class="hidden">
+<div class="panel"><h2 style="margin-top:0">Configurar e-Mola (demonstração)</h2>
+<p class="small">Estes dados ficam guardados apenas neste navegador. Não são partilhados com outros visitantes e não ativam pagamentos reais.</p>
+<div class="field"><label for="emolaNumber">Número e-Mola para exibir</label><input id="emolaNumber" inputmode="tel" placeholder="Ex.: 84XXXXXXX"></div>
+<div class="field"><label for="emolaName">Nome do titular/beneficiário</label><input id="emolaName" placeholder="Nome a exibir ao cliente"></div>
+<div class="field"><label for="emolaInstructions">Instruções para o cliente</label><input id="emolaInstructions" value="Não envies dinheiro nesta versão de demonstração."></div>
+<button class="primary wide" id="savePaymentConfig">Guardar configuração neste navegador</button><div id="paymentConfigMessage" class="status hidden"></div>
+</div>
+<div class="admin-grid" id="metrics"></div><div class="section-head"><h2>Encomendas</h2><button class="secondary" id="exportBtn">Exportar CSV</button></div><div id="ordersList"></div><button class="secondary wide" id="clearBtn">Apagar encomendas de demonstração</button><p class="small">As encomendas e configurações ficam apenas neste navegador, usando armazenamento local. Limpar dados do navegador pode apagá-los.</p></div>
 </section>
 </main>
 <footer>Diamante MZ • Protótipo demonstrativo • Não afiliado oficialmente à Garena ou ao Free Fire.</footer>
@@ -51,7 +59,21 @@ let selected = "p2";
 const $ = id => document.getElementById(id);
 const getOrders = () => {try{return JSON.parse(localStorage.getItem("dmz_orders")||"[]")}catch(e){return []}};
 const saveOrders = orders => localStorage.setItem("dmz_orders",JSON.stringify(orders));
+const defaultPaymentConfig = {number:"",name:"",instructions:"Não envies dinheiro nesta versão de demonstração."};
+const getPaymentConfig = () => {try{return {...defaultPaymentConfig,...JSON.parse(localStorage.getItem("dmz_payment_config")||"{}")}}catch(e){return {...defaultPaymentConfig}}};
+const savePaymentConfig = config => localStorage.setItem("dmz_payment_config",JSON.stringify(config));
 const money = n => `${n} MT`;
+function renderPaymentInfo(){
+ const c=getPaymentConfig();
+ const details=c.number ? `Número e-Mola: ${c.number}${c.name ? " • Beneficiário: "+c.name : ""}` : "Número de pagamento ainda não configurado.";
+ $("paymentInfo").textContent=`e-Mola (demonstração) • ${details} • ${c.instructions || defaultPaymentConfig.instructions} Pagamentos reais não são verificados.`;
+}
+function loadPaymentConfigForm(){
+ const c=getPaymentConfig();
+ $("emolaNumber").value=c.number;
+ $("emolaName").value=c.name;
+ $("emolaInstructions").value=c.instructions;
+}
 function renderPackages(){
  $("packages").innerHTML=packages.map(p=>`<button class="pack ${p.id===selected?"selected":""}" data-id="${p.id}"><span class="diamond">💎</span><strong>${p.diamonds} diamantes</strong><span class="price">${money(p.price)}</span><div class="muted">Pacote de demonstração</div></button>`).join("");
  document.querySelectorAll(".pack").forEach(b=>b.onclick=()=>{selected=b.dataset.id;renderPackages()});
@@ -62,7 +84,8 @@ function createOrder(){
  if(!/^[0-9]{5,24}$/.test(player)){show("shopMessage","Introduz um ID numérico de jogador com pelo menos 5 dígitos.");return}
  const order={id:"DMZ-"+Math.floor(100000+Math.random()*900000),player,contact,diamonds:pack.diamonds,price:pack.price,payment:"e-Mola (não ligado)",status:"Aguardando pagamento — demonstração",created:new Date().toLocaleString("pt-MZ")};
  const orders=getOrders();orders.unshift(order);saveOrders(orders);
- show("shopMessage",`Encomenda ${order.id} criada em modo de demonstração. Total ilustrativo: ${money(pack.price)}. Não pagues nem envies dinheiro por esta página: o e-Mola ainda não está ligado.`);
+ const payment=getPaymentConfig();
+ show("shopMessage",`Encomenda ${order.id} criada em modo de demonstração. Total ilustrativo: ${money(pack.price)}. Método: e-Mola. ${payment.number ? "Número configurado: "+payment.number+". " : "Número e-Mola ainda não configurado. "}${payment.name ? "Beneficiário: "+payment.name+". " : ""}Instruções: ${payment.instructions || defaultPaymentConfig.instructions} O site não confirma pagamentos nem envia diamantes.`);
  $("lookupId").value=order.id;
 }
 function lookup(){const id=$("lookupId").value.trim().toUpperCase(),o=getOrders().find(x=>x.id===id);show("lookupMessage",o?`Encomenda ${o.id} • ${o.diamonds} diamantes • ${money(o.price)} • Estado: ${o.status}.`: "Não foi encontrada uma encomenda com esse número neste navegador.");}
@@ -75,9 +98,27 @@ function adminRender(){
 $("shopNav").onclick=()=>{$("shopView").classList.remove("hidden");$("adminView").classList.add("hidden")};
 $("adminNav").onclick=()=>{$("adminView").classList.remove("hidden");$("shopView").classList.add("hidden")};
 $("orderBtn").onclick=createOrder;$("lookupBtn").onclick=lookup;
-$("adminLogin").onclick=()=>{if($("adminPin").value==="2468"){$("adminContent").classList.remove("hidden");$("adminMessage").classList.add("hidden");adminRender()}else show("adminMessage","Código incorreto. Para esta demonstração, usa 2468.")};
+$("adminLogin").onclick=()=>{if($("adminPin").value==="2468"){$("adminContent").classList.remove("hidden");$("adminMessage").classList.add("hidden");loadPaymentConfigForm();adminRender()}else show("adminMessage","Código incorreto. Para esta demonstração, usa 2468.")};
+$("savePaymentConfig").addEventListener("click",()=> {
+ const msg=$("paymentConfigMessage");
+ try {
+   const config={
+     number:$("emolaNumber").value.trim(),
+     name:$("emolaName").value.trim(),
+     instructions:$("emolaInstructions").value.trim() || defaultPaymentConfig.instructions
+   };
+   localStorage.setItem("dmz_payment_config", JSON.stringify(config));
+   renderPaymentInfo();
+   show("paymentConfigMessage","Configuração guardada neste navegador. Não é partilhada com outros visitantes e não confirma pagamentos.");
+ } catch (err) {
+   msg.textContent="Não foi possível guardar no navegador. Verifica se o navegador permite armazenamento para este site e tenta novamente. Os dados não foram confirmados.";
+   msg.classList.remove("hidden");
+   console.error("Erro ao guardar configuração e-Mola:", err);
+ }
+});
 $("exportBtn").onclick=()=>{const os=getOrders();if(!os.length){alert("Não há encomendas para exportar.");return}const keys=["id","player","contact","diamonds","price","payment","status","created"];const csv=[keys.join(","),...os.map(o=>keys.map(k=>'"'+String(o[k]??"").replaceAll('"','""')+'"').join(","))].join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="diamante-mz-encomendas-demo.csv";a.click();URL.revokeObjectURL(a.href)};
 $("clearBtn").onclick=()=>{if(confirm("Apagar todas as encomendas de demonstração deste navegador?")){saveOrders([]);adminRender()}};
 renderPackages();
+renderPaymentInfo();
 </script>
 </body></html>
