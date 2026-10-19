@@ -59,7 +59,7 @@ let selected = "p2";
 const $ = id => document.getElementById(id);
 const getOrders = () => {try{return JSON.parse(localStorage.getItem("dmz_orders")||"[]")}catch(e){return []}};
 const saveOrders = orders => localStorage.setItem("dmz_orders",JSON.stringify(orders));
-const defaultPaymentConfig = {number:"",name:"",instructions:"Não envies dinheiro nesta versão de demonstração."};
+const defaultPaymentConfig = {number:"+258873699030", Name:"Adilson",instructions:"Não envies dinheiro nesta versão de demonstração."};
 const getPaymentConfig = () => {try{return {...defaultPaymentConfig,...JSON.parse(localStorage.getItem("dmz_payment_config")||"{}")}}catch(e){return {...defaultPaymentConfig}}};
 const savePaymentConfig = config => localStorage.setItem("dmz_payment_config",JSON.stringify(config));
 const money = n => `${n} MT`;
