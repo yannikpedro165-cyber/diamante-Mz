@@ -30,16 +30,16 @@ main{max-width:980px;margin:auto;padding:22px 15px 48px}.hero{padding:26px 20px;
 <div class="field"><label for="playerId">ID do jogador Free Fire</label><input id="playerId" inputmode="numeric" placeholder="Ex.: 1234567890" maxlength="24"></div>
 <div class="field"><label for="contact">Contacto para acompanhamento (opcional)</label><input id="contact" placeholder="Número de telefone"></div>
 <div class="field"><label>Método de pagamento</label><div class="status" id="paymentInfo">e-Mola • Número de pagamento ainda não configurado.</div></div>
-<button class="primary wide" id="orderBtn">Criar encomenda de demonstração</button>
+<button class="primary wide" id="orderBtn">Criar encomenda</button>
 <div id="shopMessage" class="status hidden" role="status"></div>
 </div>
 <div class="panel"><h3 style="margin-top:0">Consultar encomenda</h3><div class="field"><label for="lookupId">Número da encomenda</label><input id="lookupId" placeholder="Ex.: DMZ-123456"></div><button class="secondary wide" id="lookupBtn">Consultar estado</button><div id="lookupMessage" class="status hidden"></div></div>
 </section>
 <section id="adminView" class="hidden">
 <div class="hero"><div class="eyebrow">Área de gestão • protótipo local</div><h1>Painel administrativo</h1><p>Visualiza encomendas de demonstração e atualiza o estado para testar o fluxo.</p><div class="notice">Este painel não tem autenticação nem servidor. Não o publiques com dados reais antes de adicionar login seguro e base de dados.</div></div>
-<div class="panel"><h2 style="margin-top:0">Acesso de demonstração</h2><div class="field"><label for="adminPin">Código de demonstração</label><input id="adminPin" type="password" placeholder="Código: 2468"></div><button class="primary wide" id="adminLogin">Abrir painel</button><div id="adminMessage" class="status hidden"></div></div>
+<div class="panel"><h2 style="margin-top:0">Acesso ao painel</h2><div class="field"><label for="adminPin">Código de demonstração</label><input id="adminPin" type="password" placeholder="Código: 2468"></div><button class="primary wide" id="adminLogin">Abrir painel</button><div id="adminMessage" class="status hidden"></div></div>
 <div id="adminContent" class="hidden">
-<div class="panel"><h2 style="margin-top:0">Configurar e-Mola (demonstração)</h2>
+<div class="panel"><h2 style="margin-top:0">Configurar e-Mola </h2>
 <p class="small">Estes dados ficam guardados apenas neste navegador. Não são partilhados com outros visitantes e não ativam pagamentos reais.</p>
 <div class="field"><label for="emolaNumber">Número e-Mola para exibir</label><input id="emolaNumber" inputmode="tel" placeholder="Ex.: 84XXXXXXX"></div>
 <div class="field"><label for="emolaName">Nome do titular/beneficiário</label><input id="emolaName" placeholder="Nome a exibir ao cliente"></div>
